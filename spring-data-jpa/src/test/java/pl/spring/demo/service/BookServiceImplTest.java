@@ -61,4 +61,16 @@ public class BookServiceImplTest {
         // then
         fail("test should throw BookNotNullIdException");
     }
+    
+    @Test
+    @Ignore // TODO jak tworzyc kilka instancji obiektow, tak aby testy byly od siebie niezalezne
+    public void testShouldGenerateID() {
+        // given
+        final BookTo bookToSave = new BookTo(null, "login", "pass");
+        Long l = 7L;
+        // when
+        BookTo saved = bookService.saveBook(bookToSave);
+        // then
+        assertEquals(l, saved.getId());
+    }
 }

@@ -1,24 +1,20 @@
 package pl.spring.demo.dao.impl;
 
-import pl.spring.demo.annotation.GenerateId;
-import pl.spring.demo.annotation.NullableId;
-import pl.spring.demo.common.Sequence;
-import pl.spring.demo.dao.BookDao;
-import pl.spring.demo.to.BookTo;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import pl.spring.demo.annotation.GenerateId;
+import pl.spring.demo.annotation.NullableId;
+import pl.spring.demo.dao.BookDao;
+import pl.spring.demo.to.BookTo;
+
 public class BookDaoImpl implements BookDao {
 
     private final Set<BookTo> ALL_BOOKS = new HashSet<>();
 
-    private Sequence sequence;
-
     public BookDaoImpl() {
-    	sequence = new Sequence();
         addTestBooks();
     }
 
@@ -41,15 +37,8 @@ public class BookDaoImpl implements BookDao {
     @NullableId
     @GenerateId
     public BookTo save(BookTo book) {
-//        if (book.getId() == null) {
-//            book.setId(sequence.nextValue(ALL_BOOKS) + 1);
-//        }
         ALL_BOOKS.add(book);
         return book;
-    }
-
-    public void setSequence(Sequence sequence) {
-        this.sequence = sequence;
     }
 
     private void addTestBooks() {

@@ -3,6 +3,7 @@ package pl.spring.demo.aop;
 import java.lang.reflect.Method;
 
 import org.springframework.aop.MethodBeforeAdvice;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import pl.spring.demo.annotation.GenerateId;
 import pl.spring.demo.annotation.NullableId;
@@ -14,24 +15,23 @@ import pl.spring.demo.to.IdAware;
 
 public class BookDaoAdvisor implements MethodBeforeAdvice {
 
-	private Sequence sequence = new Sequence();
+	private Sequence sequence;
 
 	@Override
-	public void before(Method method, Object[] objects, Object o) throws Throwable {
+	public void before(Method method, Object[] methodArgs, Object methodOwner) throws Throwable {
 
-		if (hasAnnotation(method, o, NullableId.class)) {
-			checkNotNullId(objects[0]);
+		if (hasAnnotation(method, methodOwner, NullableId.class)) {
+			checkNotNullId(methodArgs[0]);
 		}
-		if (hasAnnotation(method, o, GenerateId.class)) {
-			generateId(objects[0], o);
+		if (hasAnnotation(method, methodOwner, GenerateId.class)) {
+			generateBookId(methodArgs[0], methodOwner);
 		}
 
 	}
 
-	private void generateId(Object o, Object i) {
-		if (i instanceof BookDaoImpl) {
-			BookTo book = (BookTo) o; //TODO sprawdzic czy to ksiazka
-			book.setId(sequence.nextValue(((BookDaoImpl) i).getALL_BOOKS()) + 1);
+	private void generateBookId(Object book, Object dao) {
+		if (dao instanceof BookDaoImpl && book instanceof BookTo) {
+			((BookTo) book).setId(sequence.nextValue(((BookDaoImpl) dao).getALL_BOOKS()) + 1);
 		}
 	}
 
@@ -49,5 +49,9 @@ public class BookDaoAdvisor implements MethodBeforeAdvice {
 					.getAnnotation(annotationClazz) != null;
 		}
 		return hasAnnotation;
+	}
+
+	public void setSequence(Sequence sequence) {
+		this.sequence = sequence;
 	}
 }
