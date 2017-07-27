@@ -1,5 +1,6 @@
 package pl.spring.demo.dao.impl;
 
+import pl.spring.demo.annotation.GenerateId;
 import pl.spring.demo.annotation.NullableId;
 import pl.spring.demo.common.Sequence;
 import pl.spring.demo.dao.BookDao;
@@ -17,6 +18,7 @@ public class BookDaoImpl implements BookDao {
     private Sequence sequence;
 
     public BookDaoImpl() {
+    	sequence = new Sequence();
         addTestBooks();
     }
 
@@ -37,10 +39,11 @@ public class BookDaoImpl implements BookDao {
 
     @Override
     @NullableId
+    @GenerateId
     public BookTo save(BookTo book) {
-        if (book.getId() == null) {
-            book.setId(sequence.nextValue(ALL_BOOKS));
-        }
+//        if (book.getId() == null) {
+//            book.setId(sequence.nextValue(ALL_BOOKS) + 1);
+//        }
         ALL_BOOKS.add(book);
         return book;
     }
@@ -57,4 +60,8 @@ public class BookDaoImpl implements BookDao {
         ALL_BOOKS.add(new BookTo(5L, "Pan Samochodzik i Fantomas", "Zbigniew Nienacki"));
         ALL_BOOKS.add(new BookTo(6L, "Zemsta", "Aleksander Fredro"));
     }
+
+	public Set<BookTo> getALL_BOOKS() {
+		return ALL_BOOKS;
+	}
 }
